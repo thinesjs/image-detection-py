@@ -5,7 +5,7 @@ import numpy as np
 from keras.preprocessing import image
 # from keras.applications.resnet50 import ResNet50, preprocess_input, decode_predictions
 from PIL import Image
-import requests
+# import requests
 from matplotlib import pyplot as plt
 from mtcnn import MTCNN
 
@@ -31,7 +31,8 @@ def store_image(url, local_file_name):
             f.write(resource.read())
 
 
-def highlight_faces(image_path, faces):
+def highlight_faces(image_path):
+    faces = detector.detect_faces(plt.imread(image_path))
     # display image
     img = plt.imread(image_path)
     plt.imshow(img)
@@ -44,7 +45,8 @@ def highlight_faces(image_path, faces):
         face_border = Rectangle((x, y), width, height,
                                 fill=False, color='red')
         ax.add_patch(face_border)
-    plt.show()
+    plt.figure()
+    plt.show(block=False)
 
 
 def extract_face_from_image(image_path, required_size=(224, 224)):
@@ -122,8 +124,8 @@ if __name__ == "__main__":
     store_image(image5, "notparam.jpg")
 
     # read the image
-    image = plt.imread('param.jpg')
-    similarImage = plt.imread('param1.jpg')
+    # image = plt.imread('param.jpg')
+    # similarImage = plt.imread('param1.jpg')
 
     # using mtcnn model to identify faces in the image
     detector = MTCNN()
@@ -134,10 +136,14 @@ if __name__ == "__main__":
     #     print(face)
 
     # use defined function to highlight possible faces with a rectangular box
-    faces = detector.detect_faces(plt.imread('param1.jpg'))
-    highlight_faces('param1.jpg', faces)
-    faces = detector.detect_faces(plt.imread('param.jpg'))
-    highlight_faces('param.jpg', faces)
+    # faces = detector.detect_faces(plt.imread('param1.jpg'))
+    # highlight_faces('param1.jpg', faces).figure().show()
+    # faces = detector.detect_faces(plt.imread('param.jpg'))
+    # highlight_faces('param.jpg', faces).figure().show()
+
+    highlight_faces('param.jpg')
+    highlight_faces('param1.jpg')
+
 
     # extract faces from images and into array to compare the model scores
     faces = [extract_face_from_image(image_path)
@@ -147,5 +153,7 @@ if __name__ == "__main__":
 
     if cosine(model_scores[0], model_scores[1]) <= 0.4:
         print("faces match")
+        input("press enter twice to exit")
     else:
         print("faces do not match")
+        input("press enter twice to exit")
