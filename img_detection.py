@@ -64,11 +64,6 @@ def extract_face_from_image(image_path, required_size=(224, 224)):
 
     return image
 
-
-# # Display the first face from the extracted faces
-# plt.imshow(extracted_face[0])
-# plt.show()
-
 def get_model_scores(faces):
     samples = np.asarray(faces, 'float32')
 
@@ -119,7 +114,6 @@ if __name__ == "__main__":
     # store the image from network src
     store_image(image3, "param.jpg")
     store_image(image4, "param1.jpg")
-    store_image(image5, "notparam.jpg")
 
     # read the image
     image = plt.imread('param.jpg')
@@ -133,19 +127,26 @@ if __name__ == "__main__":
     # for face in faces:
     #     print(face)
 
+    # webcam input
+    # webcam = cv2.VideoCapture(0)
+
     # use defined function to highlight possible faces with a rectangular box
-    faces = detector.detect_faces(plt.imread('param1.jpg'))
-    highlight_faces('param1.jpg', faces)
-    faces = detector.detect_faces(plt.imread('param.jpg'))
+    faces = detector.detect_faces(image)
     highlight_faces('param.jpg', faces)
+    faces = detector.detect_faces(similarImage)
+    highlight_faces('param1.jpg', faces)
 
     # extract faces from images and into array to compare the model scores
     faces = [extract_face_from_image(image_path)
-             for image_path in ['param1.jpg', 'param.jpg']]
+             for image_path in ['param.jpg', 'param1.jpg']]
 
     model_scores = get_model_scores(faces)
 
+    print(f"score: {model_scores[0]}")
+    print(f"score 1: {model_scores[1]}")
+    print(f"match difference: {cosine(model_scores[0], model_scores[1])}")
+
     if cosine(model_scores[0], model_scores[1]) <= 0.4:
-        print("faces match")
+        print("faces match with <0.4")
     else:
         print("faces do not match")
