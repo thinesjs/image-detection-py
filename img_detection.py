@@ -151,6 +151,10 @@ if __name__ == "__main__":
 
     model_scores = get_model_scores(faces)
 
+    print(f"score: {model_scores[0]}")
+    print(f"score 1: {model_scores[1]}")
+    print(f"match difference: {cosine(model_scores[0], model_scores[1])}")
+
     if cosine(model_scores[0], model_scores[1]) <= 0.4:
         print("faces match")
         input("press enter twice to exit")
